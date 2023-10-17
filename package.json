@@ -1,0 +1,19 @@
+{
+  "name": "capadeenlace",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "build": "tsc",
+    "dev": "ts-node src/index.ts"
+  },
+  "author": "Tu Nombre",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^4.4.4",
+    "@types/node": "^16.11.7",
+    "ts-node": "^10.4.0"
+  }
+}
