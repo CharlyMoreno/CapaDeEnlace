@@ -2,6 +2,9 @@ import { ReadlineParser } from "@serialport/parser-readline";
 import { SerialPortStream } from "@serialport/stream";
 import { SerialPort } from "serialport";
 import config from "../config/config";
+import { getLargeText } from "../util/lorem";
+import moment from "moment";
+import { buildBuffers, sendNextString } from "./sender.service";
 
 const port = new SerialPortStream({
   binding: SerialPort.binding,
@@ -14,16 +17,20 @@ const parser = new ReadlineParser();
 
 // @ts-ignore
 port.on("open", () => {
-  const buffer = Buffer.from("Hola mundo\n", "utf-8");
-  console.log("Started connection");
-  console.log("-------------------");
-  port.write(buffer, "utf-8");
+  console.log(`----> SENDER STARTED at ${moment().format("DD-MM-yyyy HH:mm")}`);
+  const buffers = buildBuffers(getLargeText(10));
+  console.log(`[X] Count buffers: ${buffers.length}`);
+  sendNextString(buffers, 0, port, parser);
 });
 
-port.pipe(parser).on("data", (line) => {
-  console.log("Escuchand");
-});
+// port.pipe(parser).on("data", (line) => {
+//   console.log(line);
+// });
+
+port.pipe(parser);
 
 port.on("close", () => {
-  console.log("CLOSING SESSION");
+  console.log(
+    `[XXXX] - SENDER CLOSED at ${moment().format("DD-MM-yyyy HH:mm")}`
+  );
 });

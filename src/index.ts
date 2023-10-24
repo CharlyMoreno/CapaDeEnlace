@@ -1,5 +1,5 @@
-import * as dotenv from "dotenv";
+import { sendMessage } from "./sender/sender.service";
+import { getLargeText } from "./util/lorem";
+import { splitBuffer } from "./util/splits";
 
-dotenv.config();
-// process.env.PORT_SENDER
-// process.env.PORT_RECEIVER
+// sendMessage(getLargeText(100))
