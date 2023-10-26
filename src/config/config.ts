@@ -7,5 +7,6 @@ export default {
   PORT_RECEIVER: process.env.PORT_RECEIVER || 2,
   BAUDRATE: Number(process.env.BAUDRATE) || 14400,
   BUFFER_SIZE: Number(process.env.BUFFER_SIZE) || 1024, // 1KB
-  CHARACTER_DIVIDER: process.env.CHARACTER_DIVIDER || '#'
-};
+  CHARACTER_DIVIDER: process.env.CHARACTER_DIVIDER || '#',
+  TIME_SLEEP: Number(process.env.TIME_SLEEP) || 2000,
+};  

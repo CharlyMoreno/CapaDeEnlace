@@ -1,15 +1,13 @@
 import config from "../config/config";
 import { splitStringIntoSubStrings } from "../util/splits";
-import CRC32 from "crc-32";
 import { ReadlineParser } from "@serialport/parser-readline";
 import { SerialPortStream } from "@serialport/stream";
+import { StatusEnum } from "../data/status.enum";
+import { sleep } from "../util/sleep";
+import { getCrc } from "../util/crc";
 
 const getNumSeq = (num: number) => {
   return num % 2;
-};
-
-const getCrc = (data: string) => {
-  return CRC32.str(data);
 };
 
 export const buildBuffers = (text: string): Buffer[] => {
@@ -25,23 +23,6 @@ const buildBody = (index: number, data: string) => {
   }${getCrc(data)}\n`;
 };
 
-// export const sendMessage = (
-//   text: string,
-//   port: SerialPortStream,
-//   parser: ReadlineParser
-// ) => {
-//   const buffers = buildBuffers(text);
-
-//   buffers.forEach((buffer) => {
-//     port.write(buffer);
-//     parser.once("data", (line) => {
-//         console.log(line); // Esto debería ser la confirmación del receiver
-//         currentIndex++;
-//         sendNextString();
-//       });
-//   });
-// };
-
 export const sendNextString = async (
   buffers: Buffer[],
   currentIndex: number,
@@ -50,14 +31,14 @@ export const sendNextString = async (
 ) => {
   if (currentIndex < buffers.length) {
     const currentBuffer = buffers[currentIndex];
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await sleep(config.TIME_SLEEP);
     port.write(currentBuffer);
     parser.once("data", (line) => {
       console.log(`[+]: ${line}`);
-      if (line === "ACK") {
+      if (line === StatusEnum.ACK) {
         currentIndex += 1;
       } else {
-        console.log(`[-] Reintentando paquete`)
+        console.log(`[-] Reintentando paquete`);
       }
       sendNextString(buffers, currentIndex, port, parser);
     });
