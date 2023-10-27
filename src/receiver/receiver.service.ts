@@ -3,6 +3,8 @@ import { StatusEnum } from "../data/status.enum";
 import config from "../config/config";
 import { getDataFromPayload } from "../util/splits";
 import { getCrc } from "../util/crc";
+import "colorts/lib/string";
+
 export class ReceiverService {
   messages: Buffer[];
   port: SerialPortStream;
@@ -11,13 +13,13 @@ export class ReceiverService {
     this.port = port;
   }
   checkNumSeq = (payload: string) => {
-    const lastMessage = this.messages[this.messages.length]?.toString();
+    const lastMessage = this.messages[this.messages.length - 1]?.toString();
     if (!lastMessage) {
       return true;
     }
     const { numSeq } = getDataFromPayload(payload);
     const { numSeq: lastNumSeq } = getDataFromPayload(lastMessage);
-    return numSeq === lastNumSeq;
+    return numSeq !== lastNumSeq;
   };
   checkCrc = (payload: string) => {
     const lastMessage = this.messages[this.messages.length]?.toString() || "";
@@ -26,13 +28,19 @@ export class ReceiverService {
     }
     const { crc, data } = getDataFromPayload(payload);
     const crcData = getCrc(data);
-    return crc === crcData.toString();
+    return crc !== crcData.toString();
   };
   receiveMessage = (buffer: Buffer) => {
     const payload = buffer.toString();
+    if (payload === StatusEnum.ACK) {
+      // Restart connection
+      this.messages = [];
+      console.log('\n[----] - New Message\n'.yellow);
+      return;
+    }
     this.printMessage(payload);
     if (!this.checkNumSeq(payload) || !this.checkCrc(payload)) {
-      console.log(`[Message ${this.messages.length}] - Failed `);
+      console.log(`[Message #${this.messages.length}] - Failed `.red);
       this.sendResponse(StatusEnum.NACK);
       return;
     }
@@ -47,6 +55,7 @@ export class ReceiverService {
     const { numSeq, crc, data } = getDataFromPayload(payload);
     console.log(
       `[Message #${this.messages.length}] - [Num Seq] = ${numSeq} | [CRC] = ${crc} | [Data Length] = ${data.length}`
+        .green
     );
   };
 }

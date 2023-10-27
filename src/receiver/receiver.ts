@@ -4,6 +4,8 @@ import { SerialPort } from "serialport";
 import { ReceiverService } from "./receiver.service";
 import config from "../config/config";
 import moment from "moment";
+import "colorts/lib/string";
+
 
 const port = new SerialPortStream({
   binding: SerialPort.binding,
@@ -16,23 +18,17 @@ const parser = new ReadlineParser();
 
 port.on("open", () => {
   console.log(
-    `[----] - RECEIVER STARTED at ${moment().format("DD-MM-yyyy HH:mm")}`
+    `[----] - RECEIVER STARTED at ${moment().format("DD-MM-yyyy HH:mm")}`.yellow
   );
 });
 
 port.on("close", () => {
   console.log(
-    `[XXXX] - RECEIVER CLOSED at ${moment().format("DD-MM-yyyy HH:mm")}`
+    `[XXXX] - RECEIVER CLOSED at ${moment().format("DD-MM-yyyy HH:mm")}`.yellow
   );
 });
 
 //@ts-ignore
 port.pipe(parser).on("data", (line) => {
   receiveService.receiveMessage(line);
-  // console.log(line);
-  // const random = Math.floor(Math.random() * (4 - 0 + 1)) + 0;
-  // let response = "ACK";
-  // if (random === 2) response = "NACK";
-  // const buffer = Buffer.from(`${response}\n`, "utf-8");
-  // port.write(buffer, "utf-8");
 });

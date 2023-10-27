@@ -5,6 +5,8 @@ import config from "../config/config";
 import { getLargeText } from "../util/lorem";
 import moment from "moment";
 import { buildBuffers, sendNextString } from "./sender.service";
+import "colorts/lib/string";
+
 
 const port = new SerialPortStream({
   binding: SerialPort.binding,
@@ -17,9 +19,9 @@ const parser = new ReadlineParser();
 
 // @ts-ignore
 port.on("open", () => {
-  console.log(`----> SENDER STARTED at ${moment().format("DD-MM-yyyy HH:mm")}`);
+  console.log(`----> SENDER STARTED at ${moment().format("DD-MM-yyyy HH:mm")}`.yellow);
   const buffers = buildBuffers(getLargeText(10));
-  console.log(`[X] Count buffers: ${buffers.length}`);
+  console.log(`[X] Count buffers: ${buffers.length}`.yellow);
   sendNextString(buffers, 0, port, parser);
 });
 
@@ -31,6 +33,6 @@ port.pipe(parser);
 
 port.on("close", () => {
   console.log(
-    `[XXXX] - SENDER CLOSED at ${moment().format("DD-MM-yyyy HH:mm")}`
+    `[XXXX] - SENDER CLOSED at ${moment().format("DD-MM-yyyy HH:mm")}.`.yellow
   );
 });

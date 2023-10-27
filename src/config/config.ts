@@ -9,4 +9,5 @@ export default {
   BUFFER_SIZE: Number(process.env.BUFFER_SIZE) || 1024, // 1KB
   CHARACTER_DIVIDER: process.env.CHARACTER_DIVIDER || '#',
   TIME_SLEEP: Number(process.env.TIME_SLEEP) || 2000,
+  ACTIVE_FAILED: Boolean(process.env.ACTIVE_FAILED) || true,
 };  

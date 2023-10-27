@@ -1,24 +1,5 @@
 import config from "../config/config";
 
-export const splitBuffer = (
-  buffer: Buffer,
-  subBufferSize = config.BUFFER_SIZE
-) => {
-  const numSubBuffers = Math.ceil(buffer.length / subBufferSize);
-  console.log(numSubBuffers);
-  const subBuffers = [];
-
-  for (let i = 0; i < numSubBuffers; i++) {
-    const start = i * subBufferSize;
-    const end = Math.min((i + 1) * subBufferSize, buffer.length);
-    console.log(`${start} - ${end}`);
-    const subBuffer = buffer.slice(start, end);
-    subBuffers.push(subBuffer);
-  }
-
-  return subBuffers;
-};
-
 export const splitStringIntoSubStrings = (
   str: string,
   subStringSize = config.BUFFER_SIZE
